@@ -6,7 +6,7 @@
     },
     "require": {
         "php": ">=5.3.3",
-        "symfony/framework-bundle": ">=2.1,<2.5",
+        "symfony/framework-bundle": ">=2.1,<2.7",
         "knplabs/knp-menu-bundle": "2.x"
     },
     "target-dir": "WMC/MenuBundle"
