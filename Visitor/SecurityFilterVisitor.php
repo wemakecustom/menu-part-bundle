@@ -1,11 +1,8 @@
 <?php
 
-namespace WMC\MenuBundle\Visitor;
+namespace WMC\MenuPartBundle\Visitor;
 
-use WMC\MenuBundle\Visitors\AbstractMenuVisitor;
-
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use WMC\MenuPartBundle\Visitors\AbstractMenuVisitor;
 
 use Symfony\Component\Security\Http\Firewall\AccessListener;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -13,31 +10,47 @@ use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundE
 
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 use Knp\Menu\MenuItem;
 
-class SecurityFilterVisitor extends AbstractMenuVisitor implements ContainerAwareInterface
+/**
+ * Calls Symfony\Component\Security\Http\Firewall\AccessListener
+ * to see if current user is allowed to see an item.
+ *
+ * Does not check @Security annotations, only the firewall rules.
+ */
+class SecurityFilterVisitor extends AbstractMenuVisitor
 {
-    protected $access_listener;
-
+    /**
+     * @var Symfony\Component\HttpKernel\HttpKernelInterface
+     */
     protected $kernel;
 
-    protected $container;
+    /**
+     * @var Symfony\Component\Security\Http\Firewall\AccessListener
+     */
+    protected $accessListener;
 
-    public function __construct(HttpKernelInterface $kernel, AccessListener $access_listener)
+    /**
+     * @var Symfony\Component\HttpFoundation\RequestStack
+     */
+    protected $requestStack;
+
+    public function __construct(HttpKernelInterface $kernel, AccessListener $accessListener, RequestStack $requestStack)
     {
-        parent::__construct();
         $this->kernel = $kernel;
-        $this->access_listener = $access_listener;
+        $this->accessListener = $accessListener;
+        $this->requestStack = $requestStack;
     }
 
     protected function getClonedRequest($new_uri)
     {
-        $cloned_request = $this->container->get('request')->duplicate();
+        $request = $this->requestStack->getCurrentRequest()->duplicate();
 
-        $cloned_request->server->set('REQUEST_URI', $new_uri);
+        $request->server->set('REQUEST_URI', $new_uri);
 
-        return $cloned_request;
+        return $request;
     }
 
     public function setContainer(ContainerInterface $container = null)
@@ -48,11 +61,11 @@ class SecurityFilterVisitor extends AbstractMenuVisitor implements ContainerAwar
     public function visitMenuItem(MenuItem $item)
     {
         try {
-            $item_request = $this->getClonedRequest($item->getUri());
+            $request = $this->getClonedRequest($item->getUri());
 
-            $item_request_event = new GetResponseEvent($this->kernel, $item_request, HttpKernelInterface::MASTER_REQUEST);
+            $event = new GetResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST);
 
-            $this->access_listener->handle($item_request_event);
+            $this->accessListener->handle($event);
         } catch (AccessDeniedException $e) {
             $item->setDisplay(false);
         } catch (AuthenticationCredentialsNotFoundException $e) {

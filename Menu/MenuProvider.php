@@ -1,15 +1,15 @@
 <?php
 /**
- * @link https://github.com/KnpLabs/KnpMenuBundle/blob/master/Resources/doc/index.md#create-your-first-menu
+ * @link https://github.com/KnpLabs/KnpMenuPartBundle/blob/master/Resources/doc/index.md#create-your-first-menu
  */
 
-namespace WMC\MenuBundle\Menu;
+namespace WMC\MenuPartBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\Provider\MenuProviderInterface;
 use Knp\Menu\MenuItem;
 
-use WMC\MenuBundle\Visitors\MenuVisitorInterface;
+use WMC\MenuPartBundle\Visitors\MenuVisitorInterface;
 
 class MenuProvider implements MenuProviderInterface
 {
@@ -18,74 +18,77 @@ class MenuProvider implements MenuProviderInterface
      */
     protected $factory;
 
-    protected $visitors = array();
-
-    protected $filters = array();
-
     protected $parts = array();
+
+    protected $menus = array();
 
     public function __construct(FactoryInterface $factory)
     {
         $this->factory = $factory;
     }
 
+    public function registerMenu($name, array $options = array())
+    {
+        $this->menus[$name] = $options;
+
+        if (!isset($this->parts[$name])) {
+            $this->parts[$name] = array();
+        }
+    }
+
     public function registerMenuPart(MenuPartInterface $part, $name, $priority = 10)
     {
         $this->parts[$name][$priority][] = $part;
+
+        if (!isset($this->menus[$name])) {
+            $this->menus[$name] = $this->menus['_all'];
+        }
     }
 
-    public function registerMenuVisitor(MenuVisitorInterface $visitor, $name = null, $priority = 10)
+    public static function mergeOptions(array $base, array $options)
     {
-        $this->visitors[$name][$priority][] = $visitor;
+        $options = array_merge(array(
+            'attributes' => array(),
+            'class'      => array(),
+            'visitors'   => array(),
+            ),
+            $options
+        );
+
+        $options['attributes'] = array_merge($base['attributes'], $options['attributes']);
+        $options['class']      = array_unique(array_merge($base['class'], $options['class']));
+        $options['visitors']   = array_merge($base['visitors'], $options['visitors']);
+
+        return $options;
     }
 
-    public function registerMenuFilter(MenuVisitorInterface $filter, $name = null, $priority = 10)
+    protected static function addParts(array $index, MenuItem $menu)
     {
-        $this->filters[$name][$priority][] = $filter;
-    }
+        ksort($index);
 
-    protected function addParts(MenuItem $menu, $name)
-    {
-        ksort($this->parts[$name]);
-
-        foreach ($this->parts[$name] as $priority => $parts) {
+        foreach ($index as $priority => $parts) {
             foreach ($parts as $part) {
                 $part->addMenuParts($menu);
             }
         }
     }
 
-    protected static function runVisitorSet($visitor_set, MenuItem $menu, $name)
+    protected static function runVisitors(array $visitors, MenuItem $menu)
     {
-        $filters_comparison = function($a, $b) {
-            if ($a->is_filter === $b->is_filter) {
-                return 0;
-            }
+        // reindex everything to sort by priority, name
+        $index = array();
 
-            return $a->is_filter ? 1 : -1;
-        };
+        foreach ($visitors as $name => $visitor) {
+            $index[$visitor['priority']][$name] = $visitor;
+        }
 
-        $priorities = array_merge(array_keys(@$visitor_set[null] ?: array()),
-                                  array_keys(@$visitor_set[$name] ?: array()));
-
-        sort($priorities);
-
-        foreach ($priorities as $priority) {
-            $visitors = array_merge(@$visitor_set[null][$priority] ?: array(),
-                                    @$visitor_set[$name][$priority] ?: array());
-
-            usort($visitors, $filters_comparison);
-
-            foreach ($visitors as $visitor) {
-                $visitor->visitMenu($menu);
+        ksort($index);
+        foreach ($index as $priority => $visitors) {
+            ksort($visitors);
+            foreach ($visitors as $name => $visitor) {
+                $visitor['service']->visitMenu($menu);
             }
         }
-    }
-
-    protected function visit(MenuItem $menu, $name)
-    {
-        MenuProvider::runVisitorSet($this->visitors, $menu, $name);
-        MenuProvider::runVisitorSet($this->filters, $menu, $name);
     }
 
     public function get($name, array $options = array())
@@ -94,28 +97,31 @@ class MenuProvider implements MenuProviderInterface
             throw new \InvalidArgumentException(sprintf('The menu "%s" is not defined.', $name));
         }
 
+        $options = static::mergeOptions($this->menus[$name], $options);
+
         $menu = $this->factory->createItem('root');
 
-        // This is required for Twitter Bootstrap styling
-        $classes = array(
-            'nav',
-            "nav-$name",
-            "navbar-nav",
-        );
         if (!empty($options['class'])) {
-            $classes[] = $options['class'];
+            $menu->setChildrenAttribute('class', implode(' ', $options['class']));
         }
-        $menu->setChildrenAttribute('class', implode(' ', $classes));
 
-        $this->addParts($menu, $name);
+        if (!empty($options['attributes'])) {
+            foreach ($options['attributes'] as $attribute => $value) {
+                $menu->setChildrenAttribute($attribute, $value);
+            }
+        }
 
-        $this->visit($menu, $name);
+        static::addParts($this->parts[$name], $menu);
+
+        if (!empty($options['visitors'])) {
+            static::runVisitors($options['visitors'], $menu);
+        }
 
         return $menu;
     }
 
     public function has($name, array $options = array())
     {
-        return !empty($this->parts[$name]);
+        return $name !== '_all' && !empty($this->menus[$name]);
     }
 }

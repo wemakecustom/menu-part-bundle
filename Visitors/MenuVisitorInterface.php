@@ -1,6 +1,6 @@
 <?php
 
-namespace WMC\MenuBundle\Visitors;
+namespace WMC\MenuPartBundle\Visitors;
 
 use Knp\Menu\MenuItem;
 

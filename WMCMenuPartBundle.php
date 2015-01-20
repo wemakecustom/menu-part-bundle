@@ -1,12 +1,12 @@
 <?php
 
-namespace WMC\MenuBundle;
+namespace WMC\MenuPartBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use WMC\MenuBundle\DependencyInjection\MenuCompilerPass;
+use WMC\MenuPartBundle\DependencyInjection\MenuCompilerPass;
 
-class WMCMenuBundle extends Bundle
+class WMCMenuPartBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {

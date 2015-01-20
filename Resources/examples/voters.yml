@@ -1,0 +1,20 @@
+# src/Acme/DemoBundle/Resources/config/services.yml
+
+# Additional menu voters to vote if Request is current
+
+services:
+    acme.menu.voter.request:
+        class: WMC\MenuPartBundle\Voter\RequestVoter
+        arguments:
+            - @request_stack
+        tags:
+            - { name: knp_menu.voter }
+
+    acme.menu.voter.prefix:
+        class: WMC\MenuPartBundle\Voter\PrefixVoter
+        arguments:
+            - @request_stack
+        calls:
+            - [ setDefaultActive, [ true ] ]
+        tags:
+            - { name: knp_menu.voter }

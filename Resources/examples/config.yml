@@ -1,0 +1,27 @@
+# app/config/config.yml
+
+wmc_menu_part:
+    menus:
+        # Applies to all menus, same options as below.
+        _all:
+            # Useful for Bootstrap menus, etc.
+            class: "nav-menu"
+
+        my_menu:
+            # Services that will iterates through menu items and possibly hide or modify them.
+            visitors:
+                - wmc.menu_part.filter.security # ID of a Service implementing MenuVisitorInterface
+
+                ## May also be specified with a priority
+                # wmc.menu_part.filter.security:
+                #     priority:             10
+
+            class: "my-awesome-menu"
+                ## May also be specified as a list
+                # - menu
+                # - main-menu
+
+            # Additionnal attributes
+            # Use above for classes
+            attributes:
+                id: "my-menu"

@@ -1,13 +1,21 @@
 {
-    "name": "symfony2-bundles/wmcmenubundle",
-    "description": "WeMakeCustom Menu Bundle",
+    "name": "wemakecustom/menu-part-bundle",
+    "description": "Symfony Bundle wrapping KnpMenuBundle to declare menus by small parts",
+    "homepage": "https://github.com/wemakecustom/menu-part-bundle",
+    "keywords": ["symfony", "bundle", "menu"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastien Lavoie",
+            "homepage": "http://blog.lavoie.sl/"
+        }
+    ],
     "autoload": {
-        "psr-0": { "WMC\\MenuBundle": "" }
+        "psr-4": { "WMC\\MenuPartBundle\\": "" }
     },
     "require": {
         "php": ">=5.3.3",
         "symfony/framework-bundle": "~2.1",
         "knplabs/knp-menu-bundle": "~2.0"
-    },
-    "target-dir": "WMC/MenuBundle"
+    }
 }

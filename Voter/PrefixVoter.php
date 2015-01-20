@@ -1,52 +1,32 @@
 <?php
-/**
- * @link https://github.com/KnpLabs/KnpMenuBundle/issues/122
- */
 
-namespace WMC\MenuBundle\Voter;
+namespace WMC\MenuPartBundle\Voter;
 
 use Knp\Menu\ItemInterface;
 use Knp\Menu\Matcher\Voter\VoterInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Voter based on the uri
  */
-class PrefixVoter implements VoterInterface
+class PrefixVoter extends RequestVoter
 {
     /**
      * @var boolean
      */
-    private $default_active = false;
+    private $defaultActive = false;
 
-    /**
-     * @var \Symfony\Component\DependencyInjection\ContainerInterface
-     */
-    private $container;
-
-    public function __construct(ContainerInterface $container)
+    public function setDefaultActive($defaultActive)
     {
-        $this->container = $container;
-    }
-
-    public function setDefaultActive($default_active)
-    {
-        $this->default_active = $default_active;
+        $this->defaultActive = $defaultActive;
     }
 
     /**
-     * Checks whether an item is current.
-     *
-     * If the voter is not able to determine a result,
-     * it should return null to let other voters do the job.
-     *
-     * @param  ItemInterface $item
-     * @return boolean|null
+     * {@inheritDoc}
      */
     public function matchItem(ItemInterface $item)
     {
-        if ($prefix = $item->getExtra('prefix_match', $this->default_active)) {
-            if (strpos($this->container->get('request')->getRequestUri(), $item->getUri()) === 0) {
+        if ($prefix = $item->getExtra('prefix_match', $this->defaultActive)) {
+            if (strpos($this->getRequestUri(), $item->getUri()) === 0) {
                 return true;
             }
         }

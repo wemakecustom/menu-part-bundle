@@ -1,34 +1,16 @@
-# https://github.com/KnpLabs/KnpMenuBundle/blob/master/Resources/doc/menu_service.md
+# https://github.com/KnpLabs/KnpMenuPartBundle/blob/master/Resources/doc/menu_service.md
+
 services:
-    wmc.menu.menu_provider:
-        class: WMC\MenuBundle\Menu\MenuProvider
+    wmc.menu_part.menu_provider:
+        class: WMC\MenuPartBundle\Menu\MenuProvider
         arguments:
             - "@knp_menu.factory"
         tags:
           - { name: knp_menu.provider }
 
-    wmc.menu.voter.request:
-        class: WMC\MenuBundle\Voter\RequestVoter
-        arguments:
-            - @service_container
-        tags:
-            - { name: knp_menu.voter }
-
-    wmc.menu.voter.prefix:
-        class: WMC\MenuBundle\Voter\PrefixVoter
-        arguments:
-            - @service_container
-        calls:
-            - [ setDefaultActive, [ true ] ]
-        tags:
-            - { name: knp_menu.voter }
-
-    wmc.menu.visitor.security_filter:
-        class: WMC\MenuBundle\Visitor\SecurityFilterVisitor
+    wmc.menu_part.filter.security:
+        class: WMC\MenuPartBundle\Visitor\SecurityFilterVisitor
         arguments:
            - @kernel
            - @security.access_listener
-        calls:
-           - [ setContainer, [ @service_container ] ]
-        tags:
-           - { name: wmc.menu.filter }
+           - @request_stack

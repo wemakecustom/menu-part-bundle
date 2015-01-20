@@ -1,6 +1,6 @@
 <?php
 
-namespace WMC\MenuBundle\Visitors;
+namespace WMC\MenuPartBundle\Visitors;
 
 use Knp\Menu\MenuItem;
 
@@ -15,12 +15,7 @@ abstract class AbstractMenuVisitor implements MenuVisitorInterface
     const PROCESS_FIRST = true;
     const TRAVERSE_FIRST = false;
 
-    private $process_first;
-
-    public function __construct($visit_behaviour = AbstractMenuVisitor::PROCESS_FIRST)
-    {
-        $this->process_first = $visit_behaviour;
-    }
+    private $visitBehaviour = self::PROCESS_FIRST;
 
     protected function traverse(MenuItem $menu)
     {
@@ -29,17 +24,22 @@ abstract class AbstractMenuVisitor implements MenuVisitorInterface
         }
     }
 
-    final protected function getVisitBehaviour()
+    protected function getVisitBehaviour()
     {
-        return $this->process_first;
+        return $this->visitBehaviour;
+    }
+
+    protected function setVisitBehaviour($visitBehaviour)
+    {
+        $this->visitBehaviour = $visitBehaviour;
     }
 
     /**
      * {@inheritDoc}
      */
-    final public function visitMenu(MenuItem $menu)
+    public function visitMenu(MenuItem $menu)
     {
-        if ($this->process_first) {
+        if ($this->visitBehaviour === self::PROCESS_FIRST) {
             $this->visitMenuItem($menu);
             $this->traverse($menu);
         } else {

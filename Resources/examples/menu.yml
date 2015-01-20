@@ -1,0 +1,6 @@
+services:
+    acme.menu.home:
+        class: Acme\DemoBundle\Menu\HomeMenu
+        public: false # not strictly needed
+        tags:
+            - { name: wmc.menu_part, menu: home }

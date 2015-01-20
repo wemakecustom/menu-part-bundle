@@ -1,13 +1,10 @@
 <?php
-/**
- * @link https://github.com/KnpLabs/KnpMenuBundle/issues/122
- */
 
-namespace WMC\MenuBundle\Voter;
+namespace WMC\MenuPartBundle\Voter;
 
 use Knp\Menu\ItemInterface;
 use Knp\Menu\Matcher\Voter\VoterInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Voter based on the uri
@@ -15,30 +12,29 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class RequestVoter implements VoterInterface
 {
     /**
-     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     * @var Symfony\Component\HttpFoundation\RequestStack
      */
-    private $container;
+    protected $requestStack;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->container = $container;
+        $this->requestStack = $requestStack;
     }
 
     /**
-     * Checks whether an item is current.
-     *
-     * If the voter is not able to determine a result,
-     * it should return null to let other voters do the job.
-     *
-     * @param  ItemInterface $item
-     * @return boolean|null
+     * {@inheritDoc}
      */
     public function matchItem(ItemInterface $item)
     {
-        if ($item->getUri() === $this->container->get('request')->getRequestUri()) {
+        if ($item->getUri() === $this->getRequestUri()) {
             return true;
         }
 
         return null;
+    }
+
+    protected function getRequestUri()
+    {
+        return $this->requestStack->getCurrentRequest()->getRequestUri();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace WMC\MenuBundle\Menu;
+namespace WMC\MenuPartBundle\Menu;
 
 use Knp\Menu\MenuItem;
 
