@@ -23,8 +23,10 @@ class WMCMenuPartExtension extends ConfigurableExtension
         $definition = $container->getDefinition('wmc.menu_part.menu_provider');
 
         foreach ($mergedConfigs['menus'] as $menu => $options) {
-            foreach ($options['visitors'] as $visitorId => &$visitor) {
-                $visitor['service'] = new Reference($visitorId);
+            if (isset($options['visitors'])) {
+               foreach ($options['visitors'] as $visitorId => &$visitor) {
+                  $visitor['service'] = new Reference($visitorId);
+               }
             }
             $definition->addMethodCall('registerMenu', array($menu, $options));
         }
