@@ -48,6 +48,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->arrayNode('menus')
+                    ->defaultValue(['_all' => []])
                     ->requiresAtLeastOneElement()
                     ->useAttributeAsKey('name')
                     ->beforeNormalization()
@@ -55,7 +56,7 @@ class Configuration implements ConfigurationInterface
                         ->then(function($v) {
                             // default global menus
                             if (!isset($v['_all'])) {
-                                $v['_all'] = array();
+                                $v['_all'] = [];
                             }
 
                             return $v;
