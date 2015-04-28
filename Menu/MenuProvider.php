@@ -122,6 +122,6 @@ class MenuProvider implements MenuProviderInterface
 
     public function has($name, array $options = array())
     {
-        return $name !== '_all' && !empty($this->menus[$name]);
+        return $name !== '_all' && isset($this->menus[$name]);
     }
 }
