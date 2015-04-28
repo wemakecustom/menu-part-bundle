@@ -47,13 +47,8 @@ class MenuProvider implements MenuProviderInterface
 
     public static function mergeOptions(array $base, array $options)
     {
-        $options = array_merge(array(
-            'attributes' => array(),
-            'class'      => array(),
-            'visitors'   => array(),
-            ),
-            $options
-        );
+        $options = array_merge(['attributes' => [], 'class' => [], 'visitors' => []], $options);
+        $base    = array_merge(['attributes' => [], 'class' => [], 'visitors' => []], $base);
 
         $options['attributes'] = array_merge($base['attributes'], $options['attributes']);
         $options['class']      = array_unique(array_merge($base['class'], $options['class']));
