@@ -87,9 +87,9 @@ wmc_menu_part:
             visitors:
                 - wmc.menu_part.filter.security # ID of a Service implementing MenuVisitorInterface
 
-                ## May also be specified with a priority
-                # wmc.menu_part.filter.security:
-                #     priority:             10
+                ## May also be specified with a priority.
+                # the lowest the priority, the earliest the visitor will be run
+                # wmc.menu_part.visitor.l10n: { priority: 99 }
 
             class: "my-awesome-menu"
                 ## May also be specified as a list
@@ -102,6 +102,27 @@ wmc_menu_part:
                 id: "my-menu"
 ```
 
+## Provided Visitors
+
+### Security filter
+
+This filter (service name: `wmc.menu_part.filter.security`) will hide items the
+current user isn't allowed to access.
+
+The current version of this filter relies only on the firewall and doesn't check
+the `@Security` annotations. (TODO)
+
+### Localization (L10n) visitor
+
+This visitor will call the `translator` service on every menu item for which
+`translation_parameters` or `translation_domain` is specified in the extra.
+
+An empty array for `translation_parameters` will activate the visitor.
+
+If `transChoice` is to be used, specify `translation_number` in the extra.
+
+The item's label will be used as translation key.
+
 ## Provided Voters
 
 Voters are used to detect the current item(s) in the menu.
@@ -112,4 +133,5 @@ See [`voters.yml`](Resources/config/voters.yml) on how to use `RequestVoter` and
 ## Author
 
  * [Sébastien Lavoie](http://blog.lavoie.sl/)
+ * [Mathieu Lemoine](http://www.github.com/lemoinem)
  * [WeMakeCustom](http://wemakecustom.com/)

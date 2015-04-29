@@ -14,3 +14,8 @@ services:
            - @kernel
            - @security.access_listener
            - @request_stack
+
+    wmc.menu_part.visitor.l10n:
+        class: WMC\MenuPartBundle\Visitor\L10nVisitor
+        arguments:
+           - @translator
