@@ -102,9 +102,12 @@ wmc_menu_part:
                 id: "my-menu"
 ```
 
-## Additional Voters
+## Provided Voters
 
-See [`voters.yml`](Resources/examples/voters.yml) on how to use `RequestVoter` and `PrefixVoter`.
+Voters are used to detect the current item(s) in the menu.
+
+See [`voters.yml`](Resources/config/voters.yml) on how to use `RequestVoter` and
+`PrefixVoter`.  The file can also be imported as-is in `app/config/config.yml`.
 
 ## Author
 
