@@ -10,6 +10,30 @@ This bundle really needs tests though…
 
 **WARNING**: This bundles requries KnpMenuBundle **~2.0**.
 
+## Installation
+
+Download and install the bundle via composer
+
+``` bash
+$ php composer.phar require wemakecustom/menu-part-bundle
+```
+
+Enable the Bundle (and its dependencies) in the Kernel:
+
+```php
+<?php
+// app/AppKernel.php
+
+public function registerBundles()
+{
+    $bundles = array(
+        // ...
+        new Knp\Bundle\MenuBundle\KnpMenuBundle(),
+        new WMC\MenuPartBundle\WMCMenuPartBundle(),
+    );
+}
+```
+
 ## Creating your first menu
 
 Using [`JMSDiExtraBundle`](https://github.com/schmittjoh/JMSDiExtraBundle),
@@ -64,6 +88,14 @@ This is a service, so inject whatever you need: `request_stack`, `security.autho
 
 If you are not using [`JMSDiExtraBundle`](https://github.com/schmittjoh/JMSDiExtraBundle), you can of course
 use the traditional way. See [`HomeMenu.php`](Resources/examples/HomeMenu.php) and [`menu.yml`](Resources/examples/menu.yml)
+
+## Integration in template
+
+Simply `knp_menu_render` in your template with the name of your menu.
+
+```twig
+{{ knp_menu_render('user') }}
+```
 
 ## Configuration
 
