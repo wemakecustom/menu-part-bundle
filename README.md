@@ -49,7 +49,10 @@ use WMC\MenuPartBundle\Menu\MenuPartInterface;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Annotation\Inject;
+use JMS\DiExtraBundle\Annotation\InjectParams;
 use Knp\Menu\MenuItem;
+
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @Service(public=false)
@@ -57,23 +60,22 @@ use Knp\Menu\MenuItem;
  */
 class UserMenu implements MenuPartInterface
 {
+    protected $authorizationChecker;
+
     /**
-     * @Inject("security.context")
+     * @InjectParams({
+     *     "authorizationChecker" = @Inject("security.authorization_checker")
+     * })
      */
-    public $securityContext;
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker)
+    {
+        $this->authorizationChecker = $authorizationChecker;
+    }
 
     public function addMenuParts(MenuItem $menu)
     {
-        $user = $this->securityContext->getToken()->getUser();
-
-        if (is_object($user)) {
-            $menu->addChild(
-                'Profile',
-                array(
-                    'route' => 'fos_user_profile_show',
-                    'routeParameters' => array('id' => $user->getId()),
-                )
-            );
+        if ($this->authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $menu->addChild('Profile', array('route' => 'fos_user_profile_show'));
         }
     }
 }
