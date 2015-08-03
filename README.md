@@ -148,14 +148,32 @@ the `@Security` annotations. (TODO)
 
 ### Localization (L10n) visitor
 
+You first need to enable the visitor for the menus you want to translate.
+
+The following example enable the visitor for all menus:
+
+```yaml
+wmc_menu_part:
+  menus:
+    _all:
+      visitors:
+        - wmc.menu_part.visitor.l10n
+```
+
 This visitor will call the `translator` service on every menu item for which
-`translation_parameters` or `translation_domain` is specified in the extra.
+`translation_parameters` or `translation_domain` is specified in the `extras` option.
 
 An empty array for `translation_parameters` will activate the visitor.
 
-If `transChoice` is to be used, specify `translation_number` in the extra.
+If `transChoice` is to be used, specify `translation_number` in the `extras` option.
 
 The item's label will be used as translation key.
+
+Example:
+
+```php
+$menu->addChild('home', array('route' => 'home', 'extras' => ['translation_parameters' => []]));
+```
 
 ## Provided Voters
 
