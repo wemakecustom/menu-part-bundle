@@ -175,6 +175,8 @@ Example:
 $menu->addChild('home', array('route' => 'home', 'extras' => ['translation_parameters' => []]));
 ```
 
+TODO: Enable the visitor on items by default.
+
 ## Provided Voters
 
 Voters are used to detect the current item(s) in the menu.
