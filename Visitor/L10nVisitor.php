@@ -35,11 +35,9 @@ class L10nVisitor extends AbstractMenuVisitor
        $domain     = $item->getExtra('translation_domain');
        $parameters = $item->getExtra('translation_parameters');
 
-       if (null === $parameters) {
-          if (null === $domain) {
-             return;
-          }
-
+       if (false === $parameters) {
+          return;
+       } elseif (!is_array($parameters)) {
           $parameters = [];
        }
 

@@ -160,22 +160,51 @@ wmc_menu_part:
         - wmc.menu_part.visitor.l10n
 ```
 
-This visitor will call the `translator` service on every menu item for which
-`translation_parameters` or `translation_domain` is specified in the `extras` option.
+This visitor will call the `translator` service on every menu item. The visitor
+can be disabled for choosen items by setting the `translation_parameters`
+_extra_ to `false`.
 
-An empty array for `translation_parameters` will activate the visitor.
+To specify a custom translation domain, you can use the `translation_domain`
+_extra_.
 
-If `transChoice` is to be used, specify `translation_number` in the `extras` option.
+If `transChoice` is to be used, specify the `translation_number` _extra_.
 
 The item's label will be used as translation key.
 
 Example:
 
 ```php
-$menu->addChild('home', array('route' => 'home', 'extras' => ['translation_parameters' => []]));
-```
+// Assuming the L10n visitor is enabled for the current menu.
 
-TODO: Enable the visitor on items by default.
+// Translated with trans, using no parameters and the default translation domain
+$menu->addChild('home', ['route' => 'home']);
+
+// Translated with trans, using the %username% parameter
+// and the FOSUserBundle translation domain
+$menu->addChild('account', [
+                   'route' => 'my_account',
+                   'extras' => [
+                      'translation_parameters' => ['%username%' => $user],
+                      'translation_domain'     => 'FOSUserBundle',
+                   ]
+               ]);
+
+// Translated with transChoice
+$menu->addChild('notifications', [
+                   'route' => 'my_notifications',
+                   'extras' => [
+                      'translation_number' => $user->getNotifications()->count(),
+                   ]
+               ]);
+
+// Not translated
+$menu->addChild(':)', [
+                   'route' => 'happy',
+                   'extras' => [
+                      'translation_parameters' => false,
+                   ]
+               ]);
+```
 
 ## Provided Voters
 
