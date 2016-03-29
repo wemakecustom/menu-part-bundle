@@ -10,6 +10,7 @@ use Knp\Menu\MenuItem;
 class HomeMenu implements MenuPartInterface
 {
     public function addMenuParts(MenuItem $menu)
+    {
         $menu->addChild(
             'Home',
             array(
