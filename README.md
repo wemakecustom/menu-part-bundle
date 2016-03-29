@@ -210,8 +210,9 @@ $menu->addChild(':)', [
 
 Voters are used to detect the current item(s) in the menu.
 
-See [`voters.yml`](Resources/config/voters.yml) on how to use `RequestVoter` and
-`PrefixVoter`.  The file can also be imported as-is in `app/config/config.yml`.
+See [`voters.yml`](Resources/examples/voters.yml) on how to use `RequestVoter`
+and `PrefixVoter`.  The file can also be imported as-is in
+`app/config/config.yml`.
 
 ## Author
 
