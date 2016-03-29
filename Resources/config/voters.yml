@@ -6,14 +6,14 @@ services:
     acme.menu.voter.request:
         class: WMC\MenuPartBundle\Voter\RequestVoter
         arguments:
-            - @request_stack
+            - "@request_stack"
         tags:
             - { name: knp_menu.voter }
 
     acme.menu.voter.prefix:
         class: WMC\MenuPartBundle\Voter\PrefixVoter
         arguments:
-            - @request_stack
+            - "@request_stack"
         calls:
             - [ setDefaultActive, [ true ] ]
         tags:

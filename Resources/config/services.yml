@@ -11,11 +11,11 @@ services:
     wmc.menu_part.filter.security:
         class: WMC\MenuPartBundle\Visitor\SecurityFilterVisitor
         arguments:
-           - @kernel
-           - @security.access_listener
-           - @request_stack
+           - "@kernel"
+           - "@security.access_listener"
+           - "@request_stack"
 
     wmc.menu_part.visitor.l10n:
         class: WMC\MenuPartBundle\Visitor\L10nVisitor
         arguments:
-           - @translator
+           - "@translator"
