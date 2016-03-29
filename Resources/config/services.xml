@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+      <service id="wmc.menu_part.menu_provider" class="WMC\MenuPartBundle\Menu\MenuProvider">
+        <!-- https://github.com/KnpLabs/KnpMenuPartBundle/blob/master/Resources/doc/menu_service.md -->
+        <argument type="service" id="knp_menu.factory"/>
+        <tag name="knp_menu.provider"/>
+      </service>
+      <service id="wmc.menu_part.filter.security" class="WMC\MenuPartBundle\Visitor\SecurityFilterVisitor">
+        <argument type="service" id="kernel"/>
+        <argument type="service" id="security.access_listener"/>
+        <argument type="service" id="request_stack"/>
+      </service>
+      <service id="wmc.menu_part.visitor.l10n" class="WMC\MenuPartBundle\Visitor\L10nVisitor">
+        <argument type="service" id="translator"/>
+      </service>
+    </services>
+</container>

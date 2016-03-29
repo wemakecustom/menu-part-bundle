@@ -17,8 +17,8 @@ class WMCMenuPartExtension extends ConfigurableExtension
 {
     protected function loadInternal(array $mergedConfigs, ContainerBuilder $container)
     {
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.xml');
 
         $definition = $container->getDefinition('wmc.menu_part.menu_provider');
 
