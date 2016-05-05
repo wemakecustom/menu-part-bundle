@@ -94,7 +94,9 @@ class MenuProvider implements MenuProviderInterface
 
         $options = static::mergeOptions($this->menus[$name], $options);
 
-        $menu = $this->factory->createItem('root');
+        $menu = $this->factory->createItem('root', array(
+            'extras' => array('translation_parameters' => false),
+        ));
 
         if (!empty($options['class'])) {
             $menu->setChildrenAttribute('class', implode(' ', $options['class']));
